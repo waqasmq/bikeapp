@@ -1,0 +1,40 @@
+  <div class="example-container mat-elevation-z8">
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Enter Filter" #input>
+    </mat-form-field>
+    <mat-table [dataSource]="dataSource">
+      
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let station"> {{station.name}} </mat-cell>
+      </ng-container>
+  
+      <!-- Address Column -->
+      <ng-container matColumnDef="address">
+        <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
+        <mat-cell *matCellDef="let station"> {{station.address}} </mat-cell>
+      </ng-container>
+  
+      <!-- Capacity Column -->
+      <ng-container matColumnDef="capacity">
+        <mat-header-cell *matHeaderCellDef> Capacity </mat-header-cell>
+        <mat-cell *matCellDef="let station"> {{station.capacity}} </mat-cell>
+      </ng-container>
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;">
+      </mat-row>
+    </mat-table>
+  
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+ 
+  <google-map width="100%" [center]="center" [zoom]="12">
+    <map-marker *ngFor="let marker of markers" 
+    [position]="marker.position" [options]="markerOptions" #marker 
+    [label]= "marker.name"  (mapClick)="showStationStatus(marker.id, marker.name)"
+    >
+  </map-marker>
+</google-map>
