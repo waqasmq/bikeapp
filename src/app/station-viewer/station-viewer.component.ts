@@ -44,34 +44,36 @@ export class StationViewerComponent implements OnInit, AfterViewInit {
       this.updateMarkersOnMap(visibleItems);
     });
   }
-  
-  updateMarkersOnMap(stations: StationInformation[]) {
-    this.markers.length = 1;
-    this.addMarkersOnMap(stations);
-  }
+  // get visible station info on page.
   getVisibleSations(pageIndex: number, pageSize: number): StationInformation[] {
     const startIndex = pageIndex * pageSize;
     const endIndex = startIndex + pageSize;
     const itemsShowed = this.dataSource.filteredData.slice(startIndex, endIndex);
     return itemsShowed;
   }
+
   addStationsAndMarkers(stations: StationInformation[]) {
+    this.clearMarkers();
     this.dataSource.data = stations;
     const visibleStations = this.getVisibleSations(0, 5);
     this.addMarkersOnMap(visibleStations);
   }
 
   addMarkersOnMap(stations : StationInformation[]) {
+
     stations.forEach(station=> {
       this.markers.push({id: station.station_id, name: station.name, position: {lat: station.lat, lng: station.lon }})
     });
   }
-
+  updateMarkersOnMap(stations: StationInformation[]) {
+    this.clearMarkers();
+    this.addMarkersOnMap(stations);
+  }
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-    this.updateMarkersOnMap(this.dataSource.filteredData);
-
+    console.log(filterValue.trim() == "")
+    filterValue.trim() == "" ? this.addStationsAndMarkers(this.dataSource.filteredData) : this.updateMarkersOnMap(this.dataSource.filteredData); 
   }
   showStationStatus(id: number, name: string) {
     this.stationServce.getStationsStatuses().subscribe((data: StationStatus[]) => {
@@ -83,5 +85,8 @@ export class StationViewerComponent implements OnInit, AfterViewInit {
         }
       });
     })
+  }
+  clearMarkers() {
+    this.markers.length = 1;
   }
 }
